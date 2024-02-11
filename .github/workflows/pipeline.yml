@@ -1,3 +1,32 @@
+imports:
+  - template: ./build.yml
+    with:
+      java_version: 21
+      java_distribution: zulu
+      build_dir: build
+  - template: ./publish.yml
+    with:
+      google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
+      gcp_project_id: brian-dev-1222
+      artifact_repo_uri: us-central1-docker.pkg.dev
+      artifact_repo_name: container-registry
+      artifact_name: demo-app
+      dockerfile_context: .
+  - template: ./deploy.yml
+    with:
+      google_application_credentials: ${{ github.event.inputs.google_application_credentials }}
+      gcp_project_id: ${{ github.event.inputs.gcp_project_id }}
+      gcp_region: us-central1
+      cluster_name: autopilot-cluster-1
+      k8s_manifest: deployment.yaml
+  - template: ./rollback.yml
+    with:
+      google_application_credentials: ${{ github.event.inputs.google_application_credentials }}
+      gcp_project_id: ${{ github.event.inputs.gcp_project_id }}
+      gcp_region: us-central1
+      cluster_name: autopilot-cluster-1
+      deployment_name: demo-app-deployment
+
 name: Demo CI/CD Pipeline
 
 on:
@@ -14,127 +43,76 @@ jobs:
   build:
     name: Build & Test
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 21
-        uses: actions/setup-java@v3
-        with:
-          java-version: 21
-          distribution: 'zulu'
-
-      - name: Cache Gradle packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
-          restore-keys: ${{ runner.os }}-gradle
-
-      - name: Grant execute permission to gradlew
-        run: chmod +x gradlew
-
-      - name: Build & Test with Gradle
-        run: |
-          ls -al
-          ./gradlew build
-      
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: jar
-          path: build/libs/demo-0.0.1-SNAPSHOT.jar
+      - <<: *build
 
   analyze:
     name: Analyze
     runs-on: ubuntu-latest
     needs:
       - build
-
     steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: jar
-          path: build/libs/demo-0.0.1-SNAPSHOT.jar
-
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-
-      - name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@master
-        with:
-          args: >
-            -Dsonar.organization=briananderson1222
-            -Dsonar.projectKey=briananderson1222_demo-app
-            -Dsonar.verbose=true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - <<: *analyze
 
   publish:
     name: Publish Artifact
     runs-on: ubuntu-latest
     needs:
-      - build
+      - analyze
     if: github.event_name != 'pull_request'
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - <<: *pull-build-artifacts
+      - <<: *publish
 
-      - name: Download artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: jar
-          path: build/libs/demo-0.0.1-SNAPSHOT.jar
-
-      - id: 'auth'
-        uses: 'google-github-actions/auth@v2'
-        with:
-          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
-
-      - name: 'Set up Cloud SDK'
-        uses: 'google-github-actions/setup-gcloud@v2'
-
-      - name: Configure Docker CLI
-        run: |
-          gcloud auth configure-docker us-central1-docker.pkg.dev
-
-
-      - name: Build and push Docker image to Artifact Registry
-        run: |
-          docker build -t us-central1-docker.pkg.dev/brian-dev-1222/container-registry/demo-app:latest .
-          docker push us-central1-docker.pkg.dev/brian-dev-1222/container-registry/demo-app:latest
-
-  deploy:
+  deploy_to_dev:
     name: Deploy to Dev
     runs-on: ubuntu-latest
-    needs:
-      - publish
-    if: github.event_name != 'pull_request'
+    needs: publish
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - id: 'auth'
-        uses: 'google-github-actions/auth@v2'
+      - <<: *deploy
         with:
-          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+          google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
+          gcp_project_id: brian-dev-1222
 
-      - name: 'Set up Cloud SDK'
-        uses: 'google-github-actions/setup-gcloud@v2'
+  smoke_dev:
+    name: Smoke Test Dev
+    needs: deploy_to_dev
+    steps:
+      - <<: *smoke_test
+        with: 
+          application_url: $APP_URL
 
-      - name: Authenticate to Dev Cluster
-        run: |
-          gcloud container clusters get-credentials autopilot-cluster-1 --region us-central1 --project brian-dev-1222
+  rollback_dev:
+    name: Rollback Dev
+    needs: smoke_dev
+    if: ${{ failure() }}
+    steps:
+      - <<: *rollback 
 
-      - name: K8s Deploy
-        run: |
-          kubectl apply -f deployment.yaml
+  deploy_to_prod:
+    name: Deploy to Prod
+    runs-on: ubuntu-latest
+    needs: publish
+
+    steps:
+      - <<: *deploy
+        with:
+          google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
+          gcp_project_id: brian-dev-1222
+
+  smoke_prod:
+    name: Smoke Test Prod
+    needs: deploy_to_prod
+    steps:
+      - <<: *smoke_test
+        with: 
+          application_url: $APP_URL
+
+  rollback_prod:
+    name: Rollback Prod
+    needs: smoke_prod
+    if: ${{ failure() }}
+    steps:
+      - <<: *rollback 

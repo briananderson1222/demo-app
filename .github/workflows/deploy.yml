@@ -1,0 +1,24 @@
+jobs:
+  deploy:
+    name: Deploy to Env
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ inputs.google_application_credentials }}'
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+
+      - name: Authenticate to Cluster
+        run: |
+          gcloud container clusters get-credentials ${{ inputs.cluster_name }} --region ${{ inputs.gcp_region }} --project ${{ inputs.gcp_project_id }}
+      
+      - name: K8s Deploy
+        run: |
+          kubectl apply -f ${{ inputs.k8s_manifest }}
