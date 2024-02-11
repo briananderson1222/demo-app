@@ -1,5 +1,5 @@
 # Use a base image with Java 21
-FROM adoptopenjdk/openjdk21:alpine-jre
+FROM amazoncorretto:21-alpine
 
 # Set the working directory inside the container
 WORKDIR /app
