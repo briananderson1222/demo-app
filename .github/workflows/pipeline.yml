@@ -104,12 +104,11 @@ jobs:
         run: |
           gcloud auth configure-docker us-central1-docker.pkg.dev
 
-      - name: Build and push Docker image to Google Artifact Registry
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: us-central1-docker.pkg.dev/brian-dev-1222/container-registry/demo-app:latest
+
+      - name: Build and push Docker image to Artifact Registry
+        run: |
+          docker buildx build --platform linux/amd64,linux/arm64 -t us-central1-docker.pkg.dev/brian-dev-1222/container-registry/demo-app:latest .
+          docker push us-central1-docker.pkg.dev/brian-dev-1222/container-registry/demo-app:latest
 
   # deploy:
   #   name: Deploy to Kubernetes
