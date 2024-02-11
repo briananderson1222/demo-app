@@ -77,7 +77,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-      
   publish:
     name: Publish Artifact
     runs-on: ubuntu-latest
@@ -88,7 +87,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Download artifacts
         uses: actions/download-artifact@v2
         with:
@@ -113,16 +112,29 @@ jobs:
           docker build -t us-central1-docker.pkg.dev/brian-dev-1222/container-registry/demo-app:latest .
           docker push us-central1-docker.pkg.dev/brian-dev-1222/container-registry/demo-app:latest
 
-  # deploy:
-  #   name: Deploy to Kubernetes
-  #   runs-on: ubuntu-latest
-  #   needs:
-  #     - build
-  #     - publish
-  #   if: github.event_name != 'pull_request'
+  deploy:
+    name: Deploy to Dev
+    runs-on: ubuntu-latest
+    needs:
+      - publish
+    if: github.event_name != 'pull_request'
 
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      # Add steps to authenticate with Kubernetes cluster and deploy application
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+
+      - name: Authenticate to Dev Cluster
+        run: |
+          gcloud container clusters get-credentials autopilot-cluster-1 --region us-central1 --project brian-dev-1222
+
+      - name: K8s Deploy
+        run: |
+          kubectl apply -f deployment.yaml

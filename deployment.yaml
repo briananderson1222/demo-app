@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-app-deployment
+spec:
+  replicas: 2  # Number of replicas for your deployment
+  selector:
+    matchLabels:
+      app: demo-app
+  template:
+    metadata:
+      labels:
+        app: demo-app
+    spec:
+      containers:
+      - name: demo-app
+        image: us-central1-docker.pkg.dev/brian-dev-1222/container-registry/demo-app:latest  # Image name and tag for your application
+        ports:
+        - containerPort: 8080  # Port on which your application listens
+        # Add additional container configuration if needed
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-app-service
+spec:
+  selector:
+    app: demo-app
+  ports:
+    - protocol: TCP
+      port: 80  # Port exposed by the service
+      targetPort: 8080  # Port to which traffic will be forwarded
+  type: LoadBalancer  # Type of service (e.g., LoadBalancer, NodePort)
+---
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: demo-app-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: demo-app-deployment
+  minReplicas: 2  # Minimum number of replicas
+  maxReplicas: 3  # Maximum number of replicas
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      targetAverageUtilization: 50  # Target CPU utilization percentage
