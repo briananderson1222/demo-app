@@ -45,7 +45,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - build
-      
+
     steps:
       - name: Download artifacts
         uses: actions/download-artifact@v2
@@ -62,10 +62,11 @@ jobs:
 
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
-        args: >
-          -Dsonar.organization=briananderson1222
-          -Dsonar.projectKey=briananderson1222_demo-app
-          -Dsonar.verbose=true
+        with:
+          args: >
+            -Dsonar.organization=briananderson1222
+            -Dsonar.projectKey=briananderson1222_demo-app
+            -Dsonar.verbose=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
