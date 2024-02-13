@@ -12,20 +12,20 @@ on:
 
 jobs:
   build:
+    name: Build & Test
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       - id: build 
         uses: ./.github/actions/gradle-build
 
 
   analyze:
+    name: Analyze
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       - id: analyze 
         uses: ./.github/actions/gradle-sonar
         with:
@@ -33,12 +33,12 @@ jobs:
           sonar_token: ${{ secrets.SONAR_TOKEN }}
 
   publish:
+    name: Publish
     runs-on: ubuntu-latest
     needs: analyze
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - uses: ./.github/action/docker-push
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/docker-push
         with:
           google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
           gcp_project_id: brian-dev-1222
@@ -49,7 +49,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: publish
     steps:
-      - uses: ./.github/action/k8s-apply
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/k8s-apply
         with:
           google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
           gcp_project_id: brian-dev-1222
@@ -62,7 +63,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: deploy_to_dev
     steps:
-      - uses: ./.github/action/smoke-test
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/smoke-test
         with: 
           application_url: ${{ needs.deploy_to_dev.app_url }}
 
@@ -72,7 +74,8 @@ jobs:
     needs: smoke_dev
     if: ${{ failure() }}
     steps:
-      - uses: ./.github/action/k8s-undo-deployment
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/k8s-undo-deployment
         with: 
           google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
           gcp_project_id: brian-dev-1222
@@ -85,7 +88,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: smoke_dev
     steps:
-      - uses: ./.github/action/k8s-apply
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/k8s-apply
         with:
           google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
           gcp_project_id: brian-dev-1222
@@ -98,7 +102,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: deploy_to_prod
     steps:
-      - uses: ./.github/action/smoke-test
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/smoke-test
         with: 
           application_url: ${{ needs.deploy_to_prod.app_url }}
 
@@ -108,7 +113,8 @@ jobs:
     needs: smoke_prod
     if: ${{ failure() }}
     steps:
-      - uses: ./.github/action/k8s-undo-deployment
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/k8s-undo-deployment
         with: 
           google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
           gcp_project_id: brian-dev-1222
