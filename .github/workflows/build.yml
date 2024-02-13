@@ -1,37 +1,24 @@
+on:
+  push:
+    branches:
+      - $default_branch
+    pull_request:
+      types:
+        - opened
+        - synchronize
+        - reopened
+
 jobs:
-  setup-java:
-    name: Setup Java w/ Gradle
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set up JDK 21
-        uses: actions/setup-java@v3
-        with:
-          java-version: ${{ inputs.java_version }}
-          distribution: ${{ inputs.java_distribution }}
-      - name: Cache Gradle packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
-          restore-keys: ${{ runner.os }}-gradle
-      - name: Grant execute permission to gradlew
-        run: chmod +x gradlew
-  pull-build-artifacts:
-    name: Pull Build Artifacts
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download build artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: Build folder
-          path: ${{ inputs.build_dir }}
   build:
     name: Build & Test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - <<: *setup-java
+      - uses: ./.github/common/java.yml
+        with: 
+          java_version: ${{ inputs.java_version }}
+          java_distribution: ${{ inputs.java_distribution }}
       - name: Build & Test with Gradle
         run: |
           ./gradlew build
@@ -48,8 +35,15 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - <<: *pull-build-artifacts
-      - <<: *setup-java
+      - name: Download build artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: Build folder
+          path: build
+      - uses: ./.github/common/java.yml
+        with: 
+          java_version: ${{ inputs.java_version }}
+          java_distribution: ${{ inputs.java_distribution }}
       - name: Cache SonarCloud packages
         uses: actions/cache@v3
         with:

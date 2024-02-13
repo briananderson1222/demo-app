@@ -12,6 +12,7 @@ imports:
       artifact_repo_name: container-registry
       artifact_name: demo-app
       dockerfile_context: .
+      build_dir: build
   - template: ./deploy.yml
     with:
       google_application_credentials: ${{ github.event.inputs.google_application_credentials }}
@@ -40,30 +41,6 @@ on:
         - reopened
 
 jobs:
-  build:
-    name: Build & Test
-    runs-on: ubuntu-latest
-    steps:
-      - <<: *build
-
-  analyze:
-    name: Analyze
-    runs-on: ubuntu-latest
-    needs:
-      - build
-    steps:
-      - <<: *analyze
-
-  publish:
-    name: Publish Artifact
-    runs-on: ubuntu-latest
-    needs:
-      - analyze
-    if: github.event_name != 'pull_request'
-
-    steps:
-      - <<: *pull-build-artifacts
-      - <<: *publish
 
   deploy_to_dev:
     name: Deploy to Dev
