@@ -40,9 +40,11 @@ runs:
     - name: 'Set up Cloud SDK'
       uses: 'google-github-actions/setup-gcloud@v2'
     - name: Configure Docker CLI
+      shell: bash
       run: |
         gcloud auth configure-docker ${{ inputs.artifact_repo_uri }}
     - name: Build and push Docker image to Artifact Registry
+      shell: bash
       run: |
         docker build -t ${{ inputs.artifact_repo_uri }}/${{ inputs.gcp_project_id }}/${{ inputs.artifact_repo_name }}/${{ inputs.artifact_name }}:latest ${{ inputs.dockerfile_context }}
         docker push ${{ inputs.artifact_repo_uri }}/${{ inputs.gcp_project_id }}/${{ inputs.artifact_repo_name }}/${{ inputs.artifact_name }}:latest

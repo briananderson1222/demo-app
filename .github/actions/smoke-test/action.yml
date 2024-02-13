@@ -9,7 +9,7 @@ runs:
   steps:
     - name: Checkout code
       uses: actions/checkout@v4
-
     - name: Run test
+      shell: bash
       run: |
         echo "Smoke Test.. ${{ inputs.application_url }}"
