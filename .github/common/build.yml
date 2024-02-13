@@ -9,7 +9,7 @@ on:
         - reopened
   
 jobs:
-  build:
+  build-gradle:
     name: Build & Test
     runs-on: ubuntu-latest
     steps:
