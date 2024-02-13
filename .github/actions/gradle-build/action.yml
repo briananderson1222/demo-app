@@ -28,10 +28,10 @@ runs:
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
         restore-keys: ${{ runner.os }}-gradle
     - name: Grant execute permission to gradlew
-      shell: zsh
+      shell: bash
       run: chmod +x gradlew
     - name: Build & Test with Gradle
-      shell: zsh
+      shell: bash
       run: |
         ./gradlew build
     - name: Upload build artifacts
