@@ -13,7 +13,10 @@ inputs:
   k8s_manifest:
     required: false
     default: deployment.yaml
-      
+
+outputs:
+  app_url: "app_url"
+
 runs:
   using: "composite"
   steps:

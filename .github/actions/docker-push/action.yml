@@ -19,9 +19,6 @@ inputs:
   build_dir:
     required: false
     default: build
-      
-outputs:
-  app_url: ${{ inputs.gcp_project_id }}
 
 runs:
   using: "composite"
