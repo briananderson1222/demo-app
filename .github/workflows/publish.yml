@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - $default_branch
+      - main
       
 jobs:
   publish-docker:
