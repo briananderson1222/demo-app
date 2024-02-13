@@ -3,6 +3,8 @@ on: workflow_call
 inputs:
   google_application_credentials:
     required: true
+  gcp_project_id:
+    required: true
   artifact_name:
     required: true
   artifact_repo_uri:
@@ -40,5 +42,8 @@ runs:
     - name: Build and push Docker image to Artifact Registry
       shell: bash
       run: |
+        ls -al
+        ls -al build
+        ls -al build/libs
         docker build -t ${{ inputs.artifact_repo_uri }}/brian-dev-1222/${{ inputs.artifact_repo_name }}/${{ inputs.artifact_name }}:latest ${{ inputs.dockerfile_context }}
         docker push ${{ inputs.artifact_repo_uri }}/brian-dev-1222/${{ inputs.artifact_repo_name }}/${{ inputs.artifact_name }}:latest

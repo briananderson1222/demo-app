@@ -41,6 +41,7 @@ jobs:
       - uses: ./.github/actions/docker-push
         with:
           google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
+          gcp_project_id: brian-dev-1222
           artifact_name: demo-app
 
   deploy_to_dev:
