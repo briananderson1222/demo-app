@@ -25,6 +25,10 @@ runs:
         credentials_json: '${{ inputs.google_application_credentials }}'
     - name: 'Set up Cloud SDK'
       uses: 'google-github-actions/setup-gcloud@v2'
+    - name: Install auth plugin for kubectl
+      shell: bash
+      run: |
+        gcloud components install gke-gcloud-auth-plugin
     - name: Authenticate to Cluster
       shell: bash
       run: |
@@ -33,3 +37,7 @@ runs:
       shell: bash
       run: |
         kubectl apply -f ${{ inputs.k8s_manifest }}
+    - id: deployment-info
+      shell: bash
+      run: |
+        echo "::set-output name=app_url::$(kubectl get pods)"
