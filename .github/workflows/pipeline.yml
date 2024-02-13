@@ -13,27 +13,13 @@ imports:
       artifact_name: demo-app
       dockerfile_context: .
       build_dir: build
-  - template: ./deploy.yml
-    with:
-      google_application_credentials: ${{ github.event.inputs.google_application_credentials }}
-      gcp_project_id: ${{ github.event.inputs.gcp_project_id }}
-      gcp_region: us-central1
-      cluster_name: autopilot-cluster-1
-      k8s_manifest: deployment.yaml
-  - template: ./rollback.yml
-    with:
-      google_application_credentials: ${{ github.event.inputs.google_application_credentials }}
-      gcp_project_id: ${{ github.event.inputs.gcp_project_id }}
-      gcp_region: us-central1
-      cluster_name: autopilot-cluster-1
-      deployment_name: demo-app-deployment
-
+      
 name: Demo CI/CD Pipeline
 
 on:
   push:
     branches:
-      - main
+      - $default_branch
     pull_request:
       types:
         - opened
@@ -41,23 +27,25 @@ on:
         - reopened
 
 jobs:
-
   deploy_to_dev:
     name: Deploy to Dev
     runs-on: ubuntu-latest
     needs: publish
 
     steps:
-      - <<: *deploy
+      - uses: ./.github/common/k8s.deploy.yml
         with:
           google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
           gcp_project_id: brian-dev-1222
+          gcp_region: us-central1
+          cluster_name: autopilot-cluster-1
+          k8s_manifest: deployment.yaml
 
   smoke_dev:
     name: Smoke Test Dev
     needs: deploy_to_dev
     steps:
-      - <<: *smoke_test
+      - uses: ./.github/common/smoke.test.yml
         with: 
           application_url: $APP_URL
 
@@ -66,24 +54,33 @@ jobs:
     needs: smoke_dev
     if: ${{ failure() }}
     steps:
-      - <<: *rollback 
+      - uses: ./.github/common/k8s.rollback.yml
+        with: 
+          google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
+          gcp_project_id: brian-dev-1222
+          gcp_region: us-central1
+          cluster_name: autopilot-cluster-1
+          deployment_name: demo-app-deployment
 
   deploy_to_prod:
     name: Deploy to Prod
     runs-on: ubuntu-latest
-    needs: publish
+    needs: smoke_dev
 
     steps:
-      - <<: *deploy
+      - uses: ./.github/common/k8s.deploy.yml
         with:
           google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
           gcp_project_id: brian-dev-1222
+          gcp_region: us-central1
+          cluster_name: autopilot-cluster-1
+          k8s_manifest: deployment.yaml
 
   smoke_prod:
     name: Smoke Test Prod
     needs: deploy_to_prod
     steps:
-      - <<: *smoke_test
+      - uses: ./.github/common/smoke.test.yml
         with: 
           application_url: $APP_URL
 
@@ -92,4 +89,10 @@ jobs:
     needs: smoke_prod
     if: ${{ failure() }}
     steps:
-      - <<: *rollback 
+      - uses: ./.github/common/k8s.rollback.yml
+        with: 
+          google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
+          gcp_project_id: brian-dev-1222
+          gcp_region: us-central1
+          cluster_name: autopilot-cluster-1
+          deployment_name: demo-app-deployment
