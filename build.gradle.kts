@@ -1,5 +1,6 @@
 plugins {
 	java
+	jacoco
 	id("org.springframework.boot") version "3.2.2"
 	id("io.spring.dependency-management") version "1.1.4"
 	id("org.sonarqube") version "4.4.1.3373"
@@ -34,9 +35,9 @@ sonar {
   }
 }
 
-jacocoTestReport {
-    reports {
-        xml.enabled = true // Enable XML report generation
-        xml.required = true // Require XML report to be generated
+tasks.jacocoTestReport {
+	dependsOn(tasks.test) // tests are required to run before generating the report
+	reports {
+        xml.required = true
     }
 }
