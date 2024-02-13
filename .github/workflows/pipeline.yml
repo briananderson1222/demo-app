@@ -1,10 +1,10 @@
 imports:
-  - template: ./build.yml
+  - template: ../common/build.yml
     with:
       java_version: 21
       java_distribution: zulu
       build_dir: build
-  - template: ./publish.yml
+  - template: ../common/publish.yml
     with:
       google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
       gcp_project_id: brian-dev-1222
@@ -13,7 +13,7 @@ imports:
       artifact_name: demo-app
       dockerfile_context: .
       build_dir: build
-      
+
 name: Demo CI/CD Pipeline
 
 on:
@@ -27,6 +27,7 @@ on:
         - reopened
 
 jobs:
+
   deploy_to_dev:
     name: Deploy to Dev
     runs-on: ubuntu-latest
