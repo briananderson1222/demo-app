@@ -11,12 +11,12 @@ on:
         - reopened
 
 imports:
-  - uses: .github/workflows/build.yml
+  - uses: .github/common/build.yml
     with:
       java_version: 21
       java_distribution: zulu
       build_dir: build
-  - uses: .common/publish.yml
+  - uses: .github/common/publish.yml
     with:
       google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
       gcp_project_id: brian-dev-1222
@@ -30,17 +30,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: .github/workflows/build.yml@build
+      - uses: .github/common/build.yml@build
 
   analyze:
     runs-on: ubuntu-latest
     steps:
-      - uses: .github/workflows/build.yml@sonar-analyze
+      - uses: .github/common/build.yml@sonar-analyze
 
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: .github/workflows/publish.yml@publish-docker
+      - uses: .github/common/publish.yml@publish-docker
 
   deploy_to_dev:
     name: Deploy to Dev
