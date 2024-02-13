@@ -42,8 +42,5 @@ runs:
     - name: Build and push Docker image to Artifact Registry
       shell: bash
       run: |
-        ls -al
-        ls -al build
-        ls -al build/libs
         docker build -t ${{ inputs.artifact_repo_uri }}/${{ inputs.gcp_project_id }}/${{ inputs.artifact_repo_name }}/${{ inputs.artifact_name }}:latest ${{ inputs.dockerfile_context }}
         docker push ${{ inputs.artifact_repo_uri }}/${{ inputs.gcp_project_id }}/${{ inputs.artifact_repo_name }}/${{ inputs.artifact_name }}:latest

@@ -14,9 +14,6 @@ inputs:
     required: false
     default: deployment.yaml
 
-outputs:
-  app_url: "app_url"
-
 runs:
   using: "composite"
   steps:
