@@ -16,11 +16,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - uses: ./.github/common/build.yml
-        with:
-          java_version: 21
-          java_distribution: zulu
-          build_dir: build
+      - uses: ./.github/workflows/build.yml
+
 
   # analyze:
   #   runs-on: ubuntu-latest
@@ -32,90 +29,90 @@ jobs:
   #         java_distribution: zulu
   #         build_dir: build
 
-  publish:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - uses: ./.github/common/publish.yml
-        with:
-          google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
-          gcp_project_id: brian-dev-1222
-          artifact_repo_uri: us-central1-docker.pkg.dev
-          artifact_repo_name: container-registry
-          artifact_name: demo-app
-          dockerfile_context: .
-          build_dir: build
+  # publish:
+  #   runs-on: ubuntu-latest
+  #   needs: build
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+  #     - uses: ./.github/common/publish.yml
+  #       with:
+  #         google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
+  #         gcp_project_id: brian-dev-1222
+  #         artifact_repo_uri: us-central1-docker.pkg.dev
+  #         artifact_repo_name: container-registry
+  #         artifact_name: demo-app
+  #         dockerfile_context: .
+  #         build_dir: build
 
-  deploy_to_dev:
-    name: Deploy to Dev
-    runs-on: ubuntu-latest
-    needs: publish
-    steps:
-      - uses: ./.github/common/k8s.deploy.yml
-        with:
-          google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
-          gcp_project_id: brian-dev-1222
-          gcp_region: us-central1
-          cluster_name: autopilot-cluster-1
-          k8s_manifest: deployment.yaml
+  # deploy_to_dev:
+  #   name: Deploy to Dev
+  #   runs-on: ubuntu-latest
+  #   needs: publish
+  #   steps:
+  #     - uses: ./.github/common/k8s.deploy.yml
+  #       with:
+  #         google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
+  #         gcp_project_id: brian-dev-1222
+  #         gcp_region: us-central1
+  #         cluster_name: autopilot-cluster-1
+  #         k8s_manifest: deployment.yaml
 
-  smoke_dev:
-    name: Smoke Test Dev
-    runs-on: ubuntu-latest
-    needs: deploy_to_dev
-    steps:
-      - uses: ./.github/common/smoke.test.yml
-        with: 
-          application_url: $APP_URL
+  # smoke_dev:
+  #   name: Smoke Test Dev
+  #   runs-on: ubuntu-latest
+  #   needs: deploy_to_dev
+  #   steps:
+  #     - uses: ./.github/common/smoke.test.yml
+  #       with: 
+  #         application_url: $APP_URL
 
-  rollback_dev:
-    name: Rollback Dev
-    runs-on: ubuntu-latest
-    needs: smoke_dev
-    if: ${{ failure() }}
-    steps:
-      - uses: ./.github/common/k8s.rollback.yml
-        with: 
-          google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
-          gcp_project_id: brian-dev-1222
-          gcp_region: us-central1
-          cluster_name: autopilot-cluster-1
-          deployment_name: demo-app-deployment
+  # rollback_dev:
+  #   name: Rollback Dev
+  #   runs-on: ubuntu-latest
+  #   needs: smoke_dev
+  #   if: ${{ failure() }}
+  #   steps:
+  #     - uses: ./.github/common/k8s.rollback.yml
+  #       with: 
+  #         google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
+  #         gcp_project_id: brian-dev-1222
+  #         gcp_region: us-central1
+  #         cluster_name: autopilot-cluster-1
+  #         deployment_name: demo-app-deployment
 
-  deploy_to_prod:
-    name: Deploy to Prod
-    runs-on: ubuntu-latest
-    needs: smoke_dev
-    steps:
-      - uses: ./.github/common/k8s.deploy.yml
-        with:
-          google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
-          gcp_project_id: brian-dev-1222
-          gcp_region: us-central1
-          cluster_name: autopilot-cluster-1
-          k8s_manifest: deployment.yaml
+  # deploy_to_prod:
+  #   name: Deploy to Prod
+  #   runs-on: ubuntu-latest
+  #   needs: smoke_dev
+  #   steps:
+  #     - uses: ./.github/common/k8s.deploy.yml
+  #       with:
+  #         google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
+  #         gcp_project_id: brian-dev-1222
+  #         gcp_region: us-central1
+  #         cluster_name: autopilot-cluster-1
+  #         k8s_manifest: deployment.yaml
 
-  smoke_prod:
-    name: Smoke Test Prod
-    runs-on: ubuntu-latest
-    needs: deploy_to_prod
-    steps:
-      - uses: ./.github/common/smoke.test.yml
-        with: 
-          application_url: $APP_URL
+  # smoke_prod:
+  #   name: Smoke Test Prod
+  #   runs-on: ubuntu-latest
+  #   needs: deploy_to_prod
+  #   steps:
+  #     - uses: ./.github/common/smoke.test.yml
+  #       with: 
+  #         application_url: $APP_URL
 
-  rollback_prod:
-    name: Rollback Prod
-    runs-on: ubuntu-latest
-    needs: smoke_prod
-    if: ${{ failure() }}
-    steps:
-      - uses: ./.github/common/k8s.rollback.yml
-        with: 
-          google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
-          gcp_project_id: brian-dev-1222
-          gcp_region: us-central1
-          cluster_name: autopilot-cluster-1
-          deployment_name: demo-app-deployment
+  # rollback_prod:
+  #   name: Rollback Prod
+  #   runs-on: ubuntu-latest
+  #   needs: smoke_prod
+  #   if: ${{ failure() }}
+  #   steps:
+  #     - uses: ./.github/common/k8s.rollback.yml
+  #       with: 
+  #         google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
+  #         gcp_project_id: brian-dev-1222
+  #         gcp_region: us-central1
+  #         cluster_name: autopilot-cluster-1
+  #         deployment_name: demo-app-deployment
