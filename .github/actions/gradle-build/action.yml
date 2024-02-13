@@ -1,0 +1,43 @@
+on: workflow_call
+
+inputs:
+  java_version:
+    required: false
+    type: string
+    default: 21
+  java_distribution:
+    required: false
+    type: string
+    default: zulu
+  build_dir:
+    required: false
+    type: string
+    default: build
+  
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Set up JDK 21
+      uses: actions/setup-java@v3
+      with:
+        java-version: ${{ inputs.java_version }}
+        distribution: ${{ inputs.java_distribution }}
+    - name: Cache Gradle packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.gradle/caches
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
+        restore-keys: ${{ runner.os }}-gradle
+    - name: Grant execute permission to gradlew
+      run: chmod +x gradlew
+
+    - name: Build & Test with Gradle
+      run: |
+        ./gradlew build
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Build folder
+        path: ${{ inputs.build_dir }}
