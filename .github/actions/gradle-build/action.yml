@@ -3,23 +3,21 @@ on: workflow_call
 inputs:
   java_version:
     required: false
-    type: string
     default: 21
   java_distribution:
     required: false
-    type: string
     default: zulu
   build_dir:
     required: false
-    type: string
     default: build
   
 runs:
   using: "composite"
+  shell: zsh
   steps:
     - name: Checkout code
       uses: actions/checkout@v4
-    - name: Set up JDK 21
+    - name: Set up JDK
       uses: actions/setup-java@v3
       with:
         java-version: ${{ inputs.java_version }}
