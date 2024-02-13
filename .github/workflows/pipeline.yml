@@ -16,7 +16,7 @@ imports:
       java_version: 21
       java_distribution: zulu
       build_dir: build
-  - uses: ../common/publish.yml
+  - uses: .common/publish.yml
     with:
       google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
       gcp_project_id: brian-dev-1222
@@ -48,7 +48,7 @@ jobs:
     needs: publish
 
     steps:
-      - uses: ./.github/common/k8s.deploy.yml
+      - uses: .github/common/k8s.deploy.yml
         with:
           google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
           gcp_project_id: brian-dev-1222
@@ -60,7 +60,7 @@ jobs:
     name: Smoke Test Dev
     needs: deploy_to_dev
     steps:
-      - uses: ./.github/common/smoke.test.yml
+      - uses: .github/common/smoke.test.yml
         with: 
           application_url: $APP_URL
 
@@ -69,7 +69,7 @@ jobs:
     needs: smoke_dev
     if: ${{ failure() }}
     steps:
-      - uses: ./.github/common/k8s.rollback.yml
+      - uses: .github/common/k8s.rollback.yml
         with: 
           google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
           gcp_project_id: brian-dev-1222
@@ -83,7 +83,7 @@ jobs:
     needs: smoke_dev
 
     steps:
-      - uses: ./.github/common/k8s.deploy.yml
+      - uses: .github/common/k8s.deploy.yml
         with:
           google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
           gcp_project_id: brian-dev-1222
@@ -95,7 +95,7 @@ jobs:
     name: Smoke Test Prod
     needs: deploy_to_prod
     steps:
-      - uses: ./.github/common/smoke.test.yml
+      - uses: .github/common/smoke.test.yml
         with: 
           application_url: $APP_URL
 
@@ -104,7 +104,7 @@ jobs:
     needs: smoke_prod
     if: ${{ failure() }}
     steps:
-      - uses: ./.github/common/k8s.rollback.yml
+      - uses: .github/common/k8s.rollback.yml
         with: 
           google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
           gcp_project_id: brian-dev-1222

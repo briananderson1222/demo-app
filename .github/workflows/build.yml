@@ -17,7 +17,7 @@ jobs:
         with:
           name: Build folder
           path: ${{ inputs.build_dir }}
-  analyze:
+  sonar-analyze:
     name: Analyze
     runs-on: ubuntu-latest
     needs: build

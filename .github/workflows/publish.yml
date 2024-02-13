@@ -4,7 +4,7 @@ on:
       - $default_branch
       
 jobs:
-  publish:
+  publish-docker:
     name: Publish artifact
     runs-on: ubuntu-latest
     needs: build
