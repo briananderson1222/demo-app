@@ -13,7 +13,6 @@ inputs:
   
 runs:
   using: "composite"
-  shell: zsh
   steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -29,9 +28,10 @@ runs:
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
         restore-keys: ${{ runner.os }}-gradle
     - name: Grant execute permission to gradlew
+      shell: zsh
       run: chmod +x gradlew
-
     - name: Build & Test with Gradle
+      shell: zsh
       run: |
         ./gradlew build
     - name: Upload build artifacts
