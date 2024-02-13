@@ -19,7 +19,7 @@ name: Demo CI/CD Pipeline
 on:
   push:
     branches:
-      - $default_branch
+      - main
     pull_request:
       types:
         - opened
@@ -27,11 +27,10 @@ on:
         - reopened
 
 jobs:
-
+  
   deploy_to_dev:
     name: Deploy to Dev
     runs-on: ubuntu-latest
-    needs: publish
 
     steps:
       - uses: ./.github/common/k8s.deploy.yml

@@ -1,13 +1,3 @@
-on:
-  push:
-    branches:
-      - $default_branch
-    pull_request:
-      types:
-        - opened
-        - synchronize
-        - reopened
-
 jobs:
   build:
     name: Build & Test
@@ -30,8 +20,7 @@ jobs:
   analyze:
     name: Analyze
     runs-on: ubuntu-latest
-    needs:
-      - build
+    needs: build
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
