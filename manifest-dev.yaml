@@ -33,8 +33,8 @@ kind: Service
 metadata:
   name: demo-app-service
   namespace: development
-annotations:
-  cloud.google.com/neg: '{"ingress": true}'
+  annotations:
+    cloud.google.com/neg: '{"ingress": true}'
 spec:
   selector:
     app: demo-app
