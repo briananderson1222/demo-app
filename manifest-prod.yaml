@@ -25,8 +25,31 @@ spec:
         - containerPort: 8080  # Port on which your application listens
         resources:
           requests:
-            cpu: "250m"
-            memory: "200Mi"
+            cpu: "500m"
+            memory: "512Mi"
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+            scheme: HTTP
+          periodSeconds: 20
+          timeoutSeconds: 5 
+          failureThreshold: 1
+        readinessProbe:
+          httpGet:
+            httpGet:
+            path: /actuator/health
+            port: 8080
+            scheme: HTTP
+          periodSeconds: 10
+          timeoutSeconds: 5 
+          failureThreshold: 2
+        startupProbe:
+          tcpSocket:
+           port: 8080
+           periodSeconds: 10
+           failureThreshold: 100
+
 ---
 apiVersion: v1
 kind: Service
@@ -68,4 +91,4 @@ spec:
       name: memory
       target:
         type: AverageValue
-        averageValue: 100Mi
+        averageValue: 300Mi
