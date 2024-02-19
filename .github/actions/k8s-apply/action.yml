@@ -14,6 +14,8 @@ inputs:
     required: true
   k8s_manifest:
     required: true
+  deployment_name:
+    required: true
 
 runs:
   using: "composite"
@@ -38,7 +40,8 @@ runs:
       shell: bash
       run: |
         kubectl apply -f ${{ inputs.k8s_manifest }} --namespace=${{ inputs.cluster_namespace }}
+        kubectl wait --for condition=available deploy/${{ inputs.deployment_name }} --namespace=${{ inputs.cluster_namespace }}
     - id: deployment-info
       shell: bash
       run: |
-        echo "::set-output name=app_url::$(kubectl get service --namespace ${{ inputs.cluster_namespace }} -o jsonpath='{.items[].status.loadBalancer.ingress[].ip}')"
+        echo "app_url=$(kubectl get service --namespace ${{ inputs.cluster_namespace }} -o jsonpath='{.items[].status.loadBalancer.ingress[].ip}')" >> $GITHUB_OUTPUT

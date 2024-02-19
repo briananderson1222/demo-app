@@ -57,6 +57,7 @@ jobs:
           cluster_name: autopilot-cluster-1
           cluster_namespace: development
           k8s_manifest: manifest.yaml
+          deployment_name: demo-app-deployment
 
   smoke_dev:
     name: Smoke Test Dev
@@ -66,7 +67,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/smoke-test
         with: 
-          application_url: "tmp" #${{ needs.deploy_to_dev.app_url }}
+          application_url: ${{ needs.deploy_to_dev.app_url }}
 
   rollback_dev:
     name: Rollback Dev
@@ -98,6 +99,7 @@ jobs:
           cluster_name: autopilot-cluster-1
           cluster_namespace: production
           k8s_manifest: manifest.yaml
+          deployment_name: demo-app-deployment
 
   smoke_prod:
     name: Smoke Test Prod
