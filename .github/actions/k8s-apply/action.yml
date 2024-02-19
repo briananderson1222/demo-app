@@ -10,6 +10,8 @@ inputs:
     default: us-central1
   cluster_name:
     required: true
+  cluster_namespace:
+    required: true
   k8s_manifest:
     required: true
 
@@ -35,8 +37,8 @@ runs:
     - name: K8s Deploy
       shell: bash
       run: |
-        kubectl apply -f ${{ inputs.k8s_manifest }}
+        kubectl apply -f ${{ inputs.k8s_manifest }} --namespace=${{ inputs.cluster_namespace }}
     - id: deployment-info
       shell: bash
       run: |
-        echo "::set-output name=app_url::$(kubectl get pods)"
+        echo "::set-output name=app_url::$(kubectl get service --namespace ${{ inputs.cluster_namespace }} -o jsonpath='{.items[].status.loadBalancer.ingress[].ip}')"

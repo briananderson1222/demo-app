@@ -10,6 +10,8 @@ inputs:
     default: us-central1
   cluster_name:
     required: true
+  cluster_namespace:
+    required: true
   deployment_name:
     required: true
       
@@ -31,4 +33,4 @@ runs:
     - name: K8s Deploy
       shell: bash
       run: |
-        kubectl rollout undo deployment ${{ inputs.deployment_name }}
+        kubectl rollout undo deployment ${{ inputs.deployment_name }} --namespace ${{ inputs.cluster_namespace }}

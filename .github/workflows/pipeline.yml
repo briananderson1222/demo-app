@@ -55,7 +55,8 @@ jobs:
           gcp_project_id: brian-dev-1222
           gcp_region: us-central1
           cluster_name: autopilot-cluster-1
-          k8s_manifest: manifest-dev.yaml
+          cluster_namespace: development
+          k8s_manifest: manifest.yaml
 
   smoke_dev:
     name: Smoke Test Dev
@@ -80,6 +81,7 @@ jobs:
           gcp_project_id: brian-dev-1222
           gcp_region: us-central1
           cluster_name: autopilot-cluster-1
+          cluster_namespace: development
           deployment_name: demo-app-deployment
 
   deploy_to_prod:
@@ -94,7 +96,8 @@ jobs:
           gcp_project_id: brian-dev-1222
           gcp_region: us-central1
           cluster_name: autopilot-cluster-1
-          k8s_manifest: manifest-prod.yaml
+          cluster_namespace: production
+          k8s_manifest: manifest.yaml
 
   smoke_prod:
     name: Smoke Test Prod
@@ -119,4 +122,5 @@ jobs:
           gcp_project_id: brian-dev-1222
           gcp_region: us-central1
           cluster_name: autopilot-cluster-1
+          cluster_namespace: production
           deployment_name: demo-app-deployment
