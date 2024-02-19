@@ -11,8 +11,7 @@ inputs:
   cluster_name:
     required: true
   k8s_manifest:
-    required: false
-    default: deployment.yaml
+    required: true
 
 runs:
   using: "composite"
