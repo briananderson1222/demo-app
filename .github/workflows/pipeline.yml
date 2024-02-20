@@ -10,6 +10,13 @@ on:
         - synchronize
         - reopened
 
+env:
+  GCP_PROJECT_ID: brian-dev-1222
+  GCP_REGION: us-central1
+  K8S_CLUSTER: autopilot-cluster-1
+  K8S_MANIFEST: manifest.yaml
+  K8S_DEPLOYMENT_NAME: "demo-app-deployment"
+
 jobs:
   build:
     name: Build & Test
@@ -40,7 +47,7 @@ jobs:
       - uses: ./.github/actions/docker-push
         with:
           google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
-          gcp_project_id: brian-dev-1222
+          gcp_project_id: ${{ env.GCP_PROJECT_ID }}
           artifact_name: demo-app
 
   deploy_to_dev:
@@ -52,12 +59,12 @@ jobs:
       - uses: ./.github/actions/k8s-apply
         with:
           google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
-          gcp_project_id: brian-dev-1222
-          gcp_region: us-central1
-          cluster_name: autopilot-cluster-1
+          gcp_project_id: ${{ env.GCP_PROJECT_ID }}
+          gcp_region: ${{ env.GCP_REGION }}
+          cluster_name: ${{ env.K8S_CLUSTER }}
           cluster_namespace: development
-          k8s_manifest: manifest.yaml
-          deployment_name: demo-app-deployment
+          k8s_manifest: ${{ env.K8S_MANIFEST }}
+          deployment_name: ${{ env.K8S_DEPLOYMENT_NAME }}
 
   smoke_dev:
     name: Smoke Test Dev
@@ -79,11 +86,11 @@ jobs:
       - uses: ./.github/actions/k8s-undo-deployment
         with: 
           google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
-          gcp_project_id: brian-dev-1222
-          gcp_region: us-central1
-          cluster_name: autopilot-cluster-1
+          gcp_project_id: ${{ env.GCP_PROJECT_ID }}
+          gcp_region: ${{ env.GCP_REGION }}
+          cluster_name: ${{ env.K8S_CLUSTER }}
           cluster_namespace: development
-          deployment_name: demo-app-deployment
+          deployment_name: ${{ env.K8S_DEPLOYMENT_NAME }}
 
   deploy_to_prod:
     name: Deploy to Prod
@@ -94,12 +101,12 @@ jobs:
       - uses: ./.github/actions/k8s-apply
         with:
           google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
-          gcp_project_id: brian-dev-1222
-          gcp_region: us-central1
-          cluster_name: autopilot-cluster-1
+          gcp_project_id: ${{ env.GCP_PROJECT_ID }}
+          gcp_region: ${{ env.GCP_REGION }}
+          cluster_name: ${{ env.K8S_CLUSTER }}
           cluster_namespace: production
-          k8s_manifest: manifest.yaml
-          deployment_name: demo-app-deployment
+          k8s_manifest: ${{ env.K8S_MANIFEST }}
+          deployment_name: ${{ env.K8S_DEPLOYMENT_NAME }}
 
   smoke_prod:
     name: Smoke Test Prod
@@ -121,8 +128,8 @@ jobs:
       - uses: ./.github/actions/k8s-undo-deployment
         with: 
           google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
-          gcp_project_id: brian-dev-1222
-          gcp_region: us-central1
-          cluster_name: autopilot-cluster-1
+          gcp_project_id: ${{ env.GCP_PROJECT_ID }}
+          gcp_region: ${{ env.GCP_REGION }}
+          cluster_name: ${{ env.K8S_CLUSTER }}
           cluster_namespace: production
-          deployment_name: demo-app-deployment
+          deployment_name: ${{ env.K8S_DEPLOYMENT_NAME }}

@@ -17,6 +17,11 @@ inputs:
   deployment_name:
     required: true
 
+outputs:
+  app_url:
+    description: "Application URL"
+    value: ${{ steps.deployment-info.outputs.app_url }}
+    
 runs:
   using: "composite"
   steps:
@@ -44,4 +49,6 @@ runs:
     - id: deployment-info
       shell: bash
       run: |
-        echo "app_url=$(kubectl get service --namespace ${{ inputs.cluster_namespace }} -o jsonpath='{.items[].status.loadBalancer.ingress[].ip}')" >> $GITHUB_OUTPUT
+        export app_url=$(kubectl get service --namespace ${{ inputs.cluster_namespace }} -o jsonpath='{.items[].status.loadBalancer.ingress[].ip}')
+        echo "app_url=$app_url"
+        echo "app_url=$app_url" >> $GITHUB_OUTPUT
