@@ -41,9 +41,10 @@
 ### Configure Pipeline 
 1. Setup pipeline workflow to use the newly created project
     1. Open `.github/workflows/pipeline.yaml` and modify `env.GCP_PROJECT_ID` (line 14) to the value of $GCP_PROJECT_ID (from section: "Setup New Google Project & Credentials")
+    2. Open `manifest.yaml` and modify the Deployment's image path replacing `brian-dev-1222` with $GCP_PROJECT_ID
 2. Create a Service Account Credentials File for use by the pipeline
-    1. Navigate to https://console.cloud.google.com/iam-admin/serviceaccounts?project=$GCP_PROJECT_ID -- replacing GCP_PROJECT_ID with your project name
-    2. Click the triple dot menu for `pipeline@GCP_PROJECT_ID.iam.gserviceaccount.com` and click "Manage Keys"
+    1. Navigate to https://console.cloud.google.com/iam-admin/serviceaccounts?project=<GCP_PROJECT_ID> -- replacing GCP_PROJECT_ID with your project name
+    2. Click the triple dot menu for `pipeline@<GCP_PROJECT_ID>.iam.gserviceaccount.com` and click "Manage Keys"
         1. The `pipeline` service account was created by the `terraform apply` to demonstrate principles around 'least-privilege'
     3. Create/Download a new "JSON" format credentials file
 3. Add Credentials File as a GitHub Secret
