@@ -71,6 +71,7 @@
 ### Application
 - Move common GitHub Actions to a separate repo so they can be versioned and shared across multiple applications. ALSO, so that every stage doesn't require the 'checkout' step.
 - Integration with a key management system like Vault
+- Don't use "latest" tag for deployment
 - Concept captured by "Analyze" & "Publish" stages:
     - Integration with NexusIQ & Container Scanning tools for vulnerabilities
 - The "Build & Test" stage captures this idea, but on top of unit tests w/ jacoco coverage I would:

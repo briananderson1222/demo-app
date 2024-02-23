@@ -15,6 +15,7 @@ spec:
       containers:
       - name: demo-app
         image: us-central1-docker.pkg.dev/brian-dev-1222/container-registry/demo-app:latest  # Image name and tag for your application
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080  # Port on which your application listens
         resources:
