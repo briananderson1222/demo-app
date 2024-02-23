@@ -45,7 +45,7 @@ runs:
       shell: bash
       run: |
         kubectl apply -f ${{ inputs.k8s_manifest }} --namespace=${{ inputs.cluster_namespace }}
-        kubectl wait --for condition=available deploy/${{ inputs.deployment_name }} --namespace=${{ inputs.cluster_namespace }}
+        kubectl wait --timeout=180s --for condition=available deploy/${{ inputs.deployment_name }} --namespace=${{ inputs.cluster_namespace }}
     - id: deployment-info
       shell: bash
       run: |
