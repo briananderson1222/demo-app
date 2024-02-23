@@ -76,7 +76,7 @@
     - Add robust unit testing using mutation testing to measure test strength
     - Add robust integration & performance tests
 
-## Things that made things take a bit longer
+## Things that made things take a bit longer (Challenges)
 - I hadn't done development on a Windows computer in quite some time. Most things that I had setup in the past were severely outdated and actually made things harder to get going (had to uninstall and reinstall in certain cases and couldn't only focus on creating the pipeline/infrastructure as I didn't have a proper development environment setup)
 - GitHub Actions was brand new to me and while many concepts are familiar to me having worked with GitLab there are lots of subtle syntactical gotchas that I had to work through.
      - I will admit that I poked around with ChatGPT on this front to try to help things move quicker (also a first for me as most clients I've worked with so far don't allow public GPTs and do not have any of their own setup yet). I think "trying to move faster" in this case actually ended up slowing me down because GPT was offering advice and code that was incorrect and also referencing experimental features without the context of documentation or code that was known to be already working.
