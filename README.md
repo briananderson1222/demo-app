@@ -5,7 +5,7 @@
 ## Pre-requisites
 1. Ensure the `gcloud` cli is installed 
     1. https://cloud.google.com/sdk/docs/install
-2. Ensure the `kubectl` cli and gke-gcloud-auth-plugin are installed (only needed for cluster authentication and namespace creation)
+2. Ensure the `kubectl` cli and `gke-gcloud-auth-plugin` are installed (only needed for cluster authentication and namespace creation)
     1. `gcloud components install kubectl`
     2. `gcloud components install gke-gcloud-auth-plugin`
 
