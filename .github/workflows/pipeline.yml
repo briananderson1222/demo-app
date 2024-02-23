@@ -4,11 +4,11 @@ on:
   push:
     branches:
       - main
-    pull_request:
-      types:
-        - opened
-        - synchronize
-        - reopened
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 env:
   GCP_PROJECT_ID: brian-dev-1222
