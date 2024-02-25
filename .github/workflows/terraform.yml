@@ -1,0 +1,43 @@
+name: Demo Infrastructure Pipeline
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'infra/**'
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+
+env:
+  GCP_PROJECT_ID: brian-dev-1222
+  TF_WORKING_DIR: infra
+  
+jobs:
+  plan:
+    name: Plan Changes
+    runs-on: ubuntu-latest
+    run:
+      working-directory: ${{ env.TF_WORKING_DIR }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: terraform-plan 
+        uses: ./.github/actions/terraform-plan
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          TF_VARS_gcp_project_id: ${{ env.GCP_PROJECT_ID }}
+  apply:
+    name: Apply Changes
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - id: terraform-apply 
+        uses: ./.github/actions/terraform-apply
+
+ 

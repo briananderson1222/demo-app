@@ -1,9 +1,16 @@
 name: Demo CI/CD Pipeline
 
 on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["terraform"]
+    types:
+      - completed
   push:
     branches:
       - main
+    paths-ignore:
+      - 'infra/**'
   pull_request:
     types:
       - opened
@@ -11,6 +18,7 @@ on:
       - reopened
 
 env:
+  GCP_PROJECT_NUMBER: 876147542335
   GCP_PROJECT_ID: brian-dev-1222
   GCP_REGION: us-central1
   K8S_CLUSTER: autopilot-cluster-1
@@ -47,7 +55,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/docker-push
         with:
-          google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
+          service_account: pipeline@${{ env.GCP_PROJECT_ID }}.iam.gserviceaccount.com
+          workload_identity_provider: projects/${{ env.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/automation/providers/github-actions
           gcp_project_id: ${{ env.GCP_PROJECT_ID }}
           artifact_name: demo-app
 
@@ -62,7 +71,8 @@ jobs:
       - id: deploy-dev
         uses: ./.github/actions/k8s-apply
         with:
-          google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
+          service_account: pipeline@${{ env.GCP_PROJECT_ID }}.iam.gserviceaccount.com
+          workload_identity_provider: projects/${{ env.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/automation/providers/github-actions
           gcp_project_id: ${{ env.GCP_PROJECT_ID }}
           gcp_region: ${{ env.GCP_REGION }}
           cluster_name: ${{ env.K8S_CLUSTER }}
@@ -89,7 +99,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/k8s-undo-deployment
         with: 
-          google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
+          service_account: pipeline@${{ env.GCP_PROJECT_ID }}.iam.gserviceaccount.com
+          workload_identity_provider: projects/${{ env.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/automation/providers/github-actions
           gcp_project_id: ${{ env.GCP_PROJECT_ID }}
           gcp_region: ${{ env.GCP_REGION }}
           cluster_name: ${{ env.K8S_CLUSTER }}
@@ -107,7 +118,8 @@ jobs:
       - id: deploy-prod
         uses: ./.github/actions/k8s-apply
         with:
-          google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
+          service_account: pipeline@${{ env.GCP_PROJECT_ID }}.iam.gserviceaccount.com
+          workload_identity_provider: projects/${{ env.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/automation/providers/github-actions
           gcp_project_id: ${{ env.GCP_PROJECT_ID }}
           gcp_region: ${{ env.GCP_REGION }}
           cluster_name: ${{ env.K8S_CLUSTER }}
@@ -134,7 +146,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/k8s-undo-deployment
         with: 
-          google_application_credentials: ${{ secrets.GCP_CREDENTIALS }}
+          service_account: pipeline@${{ env.GCP_PROJECT_ID }}.iam.gserviceaccount.com
+          workload_identity_provider: projects/${{ env.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/automation/providers/github-actions
           gcp_project_id: ${{ env.GCP_PROJECT_ID }}
           gcp_region: ${{ env.GCP_REGION }}
           cluster_name: ${{ env.K8S_CLUSTER }}

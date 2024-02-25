@@ -1,0 +1,27 @@
+on: workflow_call
+
+runs:
+  using: "composite"
+  defaults:
+
+  permissions:
+    pull-requests: write
+  steps:
+  - uses: actions/checkout@v4
+  - name: Download plan artifact
+  uses: actions/download-artifact@v2
+  with:
+    name: Terraform Plan
+    path: plan.json
+  - uses: hashicorp/setup-terraform@v3
+
+  - name: Terraform Init
+    id: init
+    run: terraform init
+
+  - name: Terraform Plan
+    id: plan
+    run: terraform apply plan.json
+    continue-on-error: true
+
+ 

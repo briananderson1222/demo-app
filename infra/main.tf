@@ -1,4 +1,11 @@
 terraform {
+  cloud {
+    organization = "briananderson-xyz"
+
+    workspaces {
+      name = "brian-dev-1222"
+    }
+  }
   required_providers {
     google = {
       source  = "hashicorp/google"
