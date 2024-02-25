@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - terraform-integration
     paths:
       - 'infra/**'
   pull_request:
@@ -30,7 +31,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
         env:
-          TF_VARS_gcp_project_id: ${{ env.GCP_PROJECT_ID }}
+          TF_VAR_gcp_project_id: ${{ env.GCP_PROJECT_ID }}
   apply:
     name: Apply Changes
     runs-on: ubuntu-latest
