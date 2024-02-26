@@ -15,23 +15,26 @@ runs:
   using: "composite"
   steps:
     - uses: actions/checkout@v4
-      working-directory: ${{ inputs.tf_working_dir }}
     - uses: hashicorp/setup-terraform@v3
     - name: Terraform fmt
       id: fmt
+      working-directory: ${{ inputs.tf_working_dir }}
       run: terraform fmt -check
       continue-on-error: true
   
     - name: Terraform Init
       id: init
+      working-directory: ${{ inputs.tf_working_dir }}
       run: terraform init
   
     - name: Terraform Validate
       id: validate
+      working-directory: ${{ inputs.tf_working_dir }}
       run: terraform validate -no-color
   
     - name: Terraform Plan
       id: plan
+      working-directory: ${{ inputs.tf_working_dir }}
       run: terraform plan -input=false -no-color -out plan.json
       continue-on-error: true
   
