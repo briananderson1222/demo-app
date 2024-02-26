@@ -15,7 +15,8 @@ runs:
       uses: actions/download-artifact@v2
       with:
         name: Terraform Plan
-        path: ${{ inputs.tf_working_dir }}/plan.json
+        path: ${{ inputs.tf_working_dir }}
+        pattern: plan.json
     - uses: hashicorp/setup-terraform@v3
   
     - name: Terraform Init
@@ -29,6 +30,7 @@ runs:
       shell: bash
       working-directory: ${{ inputs.tf_working_dir }}
       run: |
+        pwd
         ls -al
         cat plan.json
         terraform apply plan.json
