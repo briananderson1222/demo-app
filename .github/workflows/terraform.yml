@@ -6,8 +6,8 @@ on:
     branches:
       - main
       - terraform-integration
-    paths:
-      - 'infra/**'
+    # paths:
+    #   - 'infra/**'
   pull_request:
     types:
       - opened
