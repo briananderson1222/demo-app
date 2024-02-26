@@ -21,11 +21,13 @@ runs:
     - name: Terraform Init
       id: init
       shell: bash
+      working-directory: ${{ inputs.tf_working_dir }}
       run: terraform init
   
     - name: Terraform Apply
       id: apply
       shell: bash
+      working-directory: ${{ inputs.tf_working_dir }}
       run: terraform apply -input=false plan.json
       continue-on-error: true
 
