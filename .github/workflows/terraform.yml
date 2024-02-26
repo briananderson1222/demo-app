@@ -53,6 +53,7 @@ jobs:
       - id: terraform-apply 
         uses: ./.github/actions/terraform-apply
         with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           tf_working_dir: ${{ env.TF_WORKING_DIR }}
         env:
           TF_VAR_gcp_project_id: ${{ env.GCP_PROJECT_ID }}
