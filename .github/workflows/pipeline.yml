@@ -26,6 +26,10 @@ env:
   K8S_MANIFEST: manifest.yaml
   K8S_DEPLOYMENT_NAME: "demo-app-deployment"
 
+permissions:
+  contents: 'read'
+  id-token: 'write'
+  
 jobs:
   build:
     name: Build & Test
