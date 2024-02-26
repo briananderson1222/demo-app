@@ -9,16 +9,13 @@ inputs:
 
 runs:
   using: "composite"
-  permissions:
-    pull-requests: write
-  working-directory: ${{ inputs.tf_working_dir }}
   steps:
     - uses: actions/checkout@v4
     - name: Download plan artifact
       uses: actions/download-artifact@v2
       with:
-        name: Terraform Plan
-        path: plan.json
+        name: Get Terraform Plan
+        path: ${{ inputs.tf_working_dir }}/plan.json
     - uses: hashicorp/setup-terraform@v3
   
     - name: Terraform Init
