@@ -42,7 +42,8 @@ runs:
       uses: actions/upload-artifact@v2
       with:
         name: Terraform Plan
-        path: ${{ inputs.tf_working_dir }}/plan.json
+        path: ${{ inputs.tf_working_dir }}
+        pattern: plan.json
   
     - uses: actions/github-script@v6
       if: github.event_name == 'pull_request'
