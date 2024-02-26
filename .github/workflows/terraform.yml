@@ -17,7 +17,14 @@ on:
 env:
   GCP_PROJECT_ID: brian-dev-1222
   TF_WORKING_DIR: infra
+
+permissions:
+  pull-requests: write
   
+defaults:
+  run:
+    shell: bash
+    
 jobs:
   plan:
     name: Plan Changes
