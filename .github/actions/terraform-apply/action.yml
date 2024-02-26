@@ -14,7 +14,7 @@ runs:
     - name: Download plan artifact
       uses: actions/download-artifact@v2
       with:
-        name: Get Terraform Plan
+        name: Terraform Plan
         path: ${{ inputs.tf_working_dir }}/plan.json
     - uses: hashicorp/setup-terraform@v3
   
