@@ -17,10 +17,6 @@ on:
 env:
   GCP_PROJECT_ID: brian-dev-1222
   TF_WORKING_DIR: infra
-
-defaults:
-  run:
-    working-directory: ${{ env.TF_WORKING_DIR }}
     
 permissions:
   pull-requests: write
@@ -32,6 +28,7 @@ jobs:
     defaults:
       run:
         shell: bash
+        working-directory: ${{ env.TF_WORKING_DIR }}
     steps:
       - uses: actions/checkout@v4
       - id: terraform-plan 
