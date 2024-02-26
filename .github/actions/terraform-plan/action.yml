@@ -41,7 +41,7 @@ runs:
     - name: Upload plan artifact
       uses: actions/upload-artifact@v2
       with:
-        name: Save Plan
+        name: Terraform Plan
         path: ${{ inputs.tf_working_dir }}/plan.json
   
     - uses: actions/github-script@v6
