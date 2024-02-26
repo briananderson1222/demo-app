@@ -30,7 +30,8 @@ runs:
       working-directory: ${{ inputs.tf_working_dir }}
       run: |
         ls -al
-        terraform apply -input=false plan.json
+        cat plan.json
+        terraform apply plan.json
       continue-on-error: true
 
     - uses: actions/github-script@v6
