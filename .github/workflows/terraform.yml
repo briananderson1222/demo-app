@@ -18,6 +18,10 @@ env:
   GCP_PROJECT_ID: brian-dev-1222
   TF_WORKING_DIR: infra
 
+defaults:
+  run:
+    working-directory: ${{ env.TF_WORKING_DIR }}
+    
 permissions:
   pull-requests: write
     
