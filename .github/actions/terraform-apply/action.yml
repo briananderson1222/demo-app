@@ -26,7 +26,7 @@ runs:
     - name: Terraform Apply
       id: apply
       shell: bash
-      run: terraform apply -input=false ${{ inputs.tf_working_dir }}/plan.json
+      run: terraform apply -input=false plan.json
       continue-on-error: true
 
     - uses: actions/github-script@v6
