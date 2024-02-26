@@ -7,10 +7,6 @@ inputs:
     required: false
     default: .
 
-defaults:
-  run:
-    shell: bash
-
 runs:
   using: "composite"
   steps:
@@ -19,22 +15,26 @@ runs:
     - name: Terraform fmt
       id: fmt
       working-directory: ${{ inputs.tf_working_dir }}
+      shell: bash
       run: terraform fmt -check
       continue-on-error: true
   
     - name: Terraform Init
       id: init
       working-directory: ${{ inputs.tf_working_dir }}
+      shell: bash
       run: terraform init
   
     - name: Terraform Validate
       id: validate
       working-directory: ${{ inputs.tf_working_dir }}
+      shell: bash
       run: terraform validate -no-color
   
     - name: Terraform Plan
       id: plan
       working-directory: ${{ inputs.tf_working_dir }}
+      shell: bash
       run: terraform plan -input=false -no-color -out plan.json
       continue-on-error: true
   
