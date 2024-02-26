@@ -9,13 +9,10 @@ inputs:
 
 runs:
   using: "composite"
-  permissions:
-    pull-requests: write
-  working-directory: ${{ inputs.tf_working_dir }}
   steps:
     - uses: actions/checkout@v4
+      working-directory: ${{ inputs.tf_working_dir }}
     - uses: hashicorp/setup-terraform@v3
-  
     - name: Terraform fmt
       id: fmt
       run: terraform fmt -check
