@@ -25,7 +25,7 @@ env:
   K8S_MANIFEST: manifest.yaml
   K8S_DEPLOYMENT_NAME: demo-app-deployment
   PIPELINE_SA: pipeline@brian-dev-1222.iam.gserviceaccount.com
-  WORKLOAD_IDENTITY_PROVIDER: projects/876147542335/locations/global/workloadIdentityPools/github/providers/github-automation
+  WORKLOAD_IDENTITY_PROVIDER: projects/876147542335/locations/global/workloadIdentityPools/github-brian1222/providers/github-automation
 
 
 permissions:

@@ -1,5 +1,5 @@
 resource "google_iam_workload_identity_pool" "automation" {
-  workload_identity_pool_id = "github"
+  workload_identity_pool_id = "github-brian1222"
 }
 
 resource "google_iam_workload_identity_pool_provider" "github-automation" {
