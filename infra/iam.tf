@@ -30,7 +30,7 @@ resource "google_service_account_iam_member" "cicd-workload-identity" {
   service_account_id = google_service_account.cicd.name
 
   role   = "roles/iam.workloadIdentityUser"
-  member = "principal://iam.googleapis.com/${google_iam_workload_identity_pool.github.name}/attribute.repository_owner/briananderson1222"
+  member = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github.name}/attribute.repository_owner/briananderson1222"
 }
 
 resource "google_project_iam_member" "cicd-container-developer" {
