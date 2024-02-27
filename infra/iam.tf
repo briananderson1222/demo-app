@@ -26,6 +26,13 @@ resource "google_artifact_registry_repository_iam_member" "cicd" {
   member     = "serviceAccount:${google_service_account.cicd.email}"
 }
 
+resource "google_service_account_iam_member" "cicd-workload-identity" {
+  service_account_id = google_service_account.cicd.name
+
+  role   = "roles/iam.workloadIdentityUser"
+  member = "principal://iam.googleapis.com/${google_iam_workload_identity_pool_provider.github-automation.name}"
+}
+
 resource "google_project_iam_member" "cicd-container-developer" {
   depends_on = [google_project_service.cloudresource] # For demo purposes
   project    = var.google_project_id

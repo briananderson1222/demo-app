@@ -1,4 +1,11 @@
 terraform {
+  cloud {
+    organization = "briananderson-xyz"
+
+    workspaces {
+      name = "brian-dev-1222"
+    }
+  }
   required_providers {
     google = {
       source  = "hashicorp/google"
@@ -8,8 +15,8 @@ terraform {
 }
 
 provider "google" {
-  project     = var.google_project_id
-  region      = var.region
+  project = var.google_project_id
+  region  = var.region
 }
 
 resource "google_project_service" "cloudresource" {
