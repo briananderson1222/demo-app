@@ -19,12 +19,14 @@ on:
       - reopened
 
 env:
-  GCP_PROJECT_NUMBER: 876147542335
   GCP_PROJECT_ID: brian-dev-1222
   GCP_REGION: us-central1
   K8S_CLUSTER: autopilot-cluster-1
   K8S_MANIFEST: manifest.yaml
-  K8S_DEPLOYMENT_NAME: "demo-app-deployment"
+  K8S_DEPLOYMENT_NAME: demo-app-deployment
+  PIPELINE_SA: pipeline@brian-dev-1222.iam.gserviceaccount.com
+  WORKLOAD_IDENTITY_PROVIDER: projects/876147542335/locations/global/workloadIdentityPools/github/providers/github-automation
+
 
 permissions:
   contents: 'read'
@@ -60,8 +62,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/docker-push
         with:
-          service_account: pipeline@${{ env.GCP_PROJECT_ID }}.iam.gserviceaccount.com
-          workload_identity_provider: projects/${{ env.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/automation/providers/github-actions
+          service_account: ${{ env.PIPELINE_SA }}
+          workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
           gcp_project_id: ${{ env.GCP_PROJECT_ID }}
           artifact_name: demo-app
 
@@ -76,8 +78,8 @@ jobs:
       - id: deploy-dev
         uses: ./.github/actions/k8s-apply
         with:
-          service_account: pipeline@${{ env.GCP_PROJECT_ID }}.iam.gserviceaccount.com
-          workload_identity_provider: projects/${{ env.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/automation/providers/github-actions
+          service_account: ${{ env.PIPELINE_SA }}
+          workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
           gcp_project_id: ${{ env.GCP_PROJECT_ID }}
           gcp_region: ${{ env.GCP_REGION }}
           cluster_name: ${{ env.K8S_CLUSTER }}
@@ -104,8 +106,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/k8s-undo-deployment
         with: 
-          service_account: pipeline@${{ env.GCP_PROJECT_ID }}.iam.gserviceaccount.com
-          workload_identity_provider: projects/${{ env.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/automation/providers/github-actions
+          service_account: ${{ env.PIPELINE_SA }}
+          workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
           gcp_project_id: ${{ env.GCP_PROJECT_ID }}
           gcp_region: ${{ env.GCP_REGION }}
           cluster_name: ${{ env.K8S_CLUSTER }}
@@ -123,8 +125,8 @@ jobs:
       - id: deploy-prod
         uses: ./.github/actions/k8s-apply
         with:
-          service_account: pipeline@${{ env.GCP_PROJECT_ID }}.iam.gserviceaccount.com
-          workload_identity_provider: projects/${{ env.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/automation/providers/github-actions
+          service_account: ${{ env.PIPELINE_SA }}
+          workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
           gcp_project_id: ${{ env.GCP_PROJECT_ID }}
           gcp_region: ${{ env.GCP_REGION }}
           cluster_name: ${{ env.K8S_CLUSTER }}
@@ -151,8 +153,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/k8s-undo-deployment
         with: 
-          service_account: pipeline@${{ env.GCP_PROJECT_ID }}.iam.gserviceaccount.com
-          workload_identity_provider: projects/${{ env.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/automation/providers/github-actions
+          service_account: ${{ env.PIPELINE_SA }}
+          workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
           gcp_project_id: ${{ env.GCP_PROJECT_ID }}
           gcp_region: ${{ env.GCP_REGION }}
           cluster_name: ${{ env.K8S_CLUSTER }}
