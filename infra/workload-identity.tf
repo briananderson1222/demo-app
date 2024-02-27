@@ -1,9 +1,9 @@
-resource "google_iam_workload_identity_pool" "automation" {
+resource "google_iam_workload_identity_pool" "github" {
   workload_identity_pool_id = "github-brian1222"
 }
 
 resource "google_iam_workload_identity_pool_provider" "github-automation" {
-  workload_identity_pool_id          = google_iam_workload_identity_pool.automation.workload_identity_pool_id
+  workload_identity_pool_id          = google_iam_workload_identity_pool.github.workload_identity_pool_id
   workload_identity_pool_provider_id = "github-automation"
   display_name                       = "Demo App Provider"
 
