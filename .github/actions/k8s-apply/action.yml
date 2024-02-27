@@ -46,6 +46,7 @@ runs:
     - name: Authenticate to Cluster
       shell: bash
       run: |
+        gcloud auth login --brief --cred-file="${{ steps.auth.outputs.credentials_file_path }}"
         gcloud container clusters get-credentials ${{ inputs.cluster_name }} --region ${{ inputs.gcp_region }} --project ${{ inputs.gcp_project_id }}
     - name: K8s Deploy
       shell: bash

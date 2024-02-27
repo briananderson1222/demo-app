@@ -19,11 +19,37 @@ resource "google_service_account" "cluster" {
   display_name = "Service Account for operating GKE with minimum permissions"
 }
 
+resource "google_iam_workload_identity_pool" "automation" {
+  workload_identity_pool_id = "github"
+}
+
+resource "google_iam_workload_identity_pool_provider" "github-actions" {
+  workload_identity_pool_id           	= google_iam_workload_identity_pool.automation.workload_identity_pool_id
+  workload_identity_pool_provider_id  	= "github-actions"
+  display_name                        		= "GitHub Actions"
+
+  attribute_mapping                   = {
+    "google.subject"                  		= "assertion.sub"
+  }
+
+  oidc {
+       issuer_uri        = "https://token.actions.githubusercontent.com"
+  }
+
+}
+
 resource "google_artifact_registry_repository_iam_member" "cicd" {
   location   = google_artifact_registry_repository.artifact-repo.location
   repository = google_artifact_registry_repository.artifact-repo.name
   role       = "roles/artifactregistry.writer"
   member     = "serviceAccount:${google_service_account.cicd.email}"
+}
+
+resource "google_service_account_iam_member" "cicd-workload-identity" {
+  service_account_id =      google_service_account.cicd.name
+
+  role   = "roles/iam.workloadIdentityUser"
+  member = "principal://iam.googleapis.com/${google_iam_workload_identity_pool_provider.github-actions.name}"
 }
 
 resource "google_project_iam_member" "cicd-container-developer" {
