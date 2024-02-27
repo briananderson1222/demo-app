@@ -26,8 +26,6 @@ outputs:
     
 runs:
   using: "composite"
-  permissions:
-    id-token: write
   steps:
     - name: Checkout code
       uses: actions/checkout@v4
