@@ -15,8 +15,8 @@ terraform {
 }
 
 provider "google" {
-  project     = var.google_project_id
-  region      = var.region
+  project = var.google_project_id
+  region  = var.region
 }
 
 resource "google_project_service" "cloudresource" {

@@ -27,7 +27,7 @@ resource "google_artifact_registry_repository_iam_member" "cicd" {
 }
 
 resource "google_service_account_iam_member" "cicd-workload-identity" {
-  service_account_id =      google_service_account.cicd.name
+  service_account_id = google_service_account.cicd.name
 
   role   = "roles/iam.workloadIdentityUser"
   member = "principal://iam.googleapis.com/${google_iam_workload_identity_pool_provider.github-automation.name}"
