@@ -14,9 +14,7 @@ resource "google_iam_workload_identity_pool_provider" "github-automation" {
     "attribute.repository_owner"="assertion.repository_owner"
   }
   
-  attribute_condition = {
-    "assertion.repository_owner" == "briananderson1222"
-  }
+  attribute_condition = "'briananderson1222'" in attribute.repository_owner
 
   oidc {
        issuer_uri        = "https://token.actions.githubusercontent.com"
