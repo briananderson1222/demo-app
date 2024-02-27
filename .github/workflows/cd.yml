@@ -3,7 +3,7 @@ name: Demo CD Pipeline
 on:
   workflow_dispatch:
   workflow_run:
-    workflows: ["ci"]
+    workflows: ["Demo CI Pipeline"]
     types:
       - completed
 
