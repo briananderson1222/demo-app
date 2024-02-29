@@ -18,7 +18,6 @@ env:
   PIPELINE_SA: pipeline@brian-dev-1222.iam.gserviceaccount.com
   WORKLOAD_IDENTITY_PROVIDER: projects/876147542335/locations/global/workloadIdentityPools/github-brian1222/providers/github-automation
 
-
 permissions:
   contents: 'read'
   id-token: 'write'
@@ -27,6 +26,7 @@ jobs:
   deploy_to_dev:
     name: Deploy to Dev
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     outputs:
       app_url: ${{ steps.deploy-dev.outputs.app_url }}
     steps:
