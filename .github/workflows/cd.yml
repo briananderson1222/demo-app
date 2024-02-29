@@ -6,6 +6,8 @@ on:
     workflows: ["Demo CI Pipeline"]
     types:
       - completed
+    branches:
+      - main
 
 env:
   GCP_PROJECT_ID: brian-dev-1222

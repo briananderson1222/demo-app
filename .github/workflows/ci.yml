@@ -6,11 +6,6 @@ on:
     workflows: ["Demo Infrastructure Pipeline"]
     types:
       - completed
-  pull_request:
-    types:
-      - opened
-      - synchronize
-      - reopened
 
 env:
   GCP_PROJECT_ID: brian-dev-1222
