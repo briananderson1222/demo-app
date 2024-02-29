@@ -12,8 +12,6 @@ on:
       - opened
       - synchronize
       - reopened
-    paths:
-      - '!infra/**'
 
 env:
   GCP_PROJECT_ID: brian-dev-1222
