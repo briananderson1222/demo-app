@@ -6,11 +6,6 @@ on:
     workflows: ["Demo Infrastructure Pipeline"]
     types:
       - completed
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - 'infra/**'
   pull_request:
     types:
       - opened
