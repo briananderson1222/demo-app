@@ -2,10 +2,16 @@ name: Demo CI Pipeline
 
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows: ["Demo Infrastructure Pipeline"]
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'infra/**'
+  pull_request:
     types:
-      - completed
+      - opened
+      - synchronize
+      - reopened
 
 env:
   GCP_PROJECT_ID: brian-dev-1222
