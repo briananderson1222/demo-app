@@ -15,3 +15,18 @@ resource "google_container_cluster" "primary" {
     }
   }
 }
+
+
+## For demo purposes
+resource "kubernetes_namespace" "development" {
+  metadata {
+    name = "development"
+  }
+}
+
+## For demo purposes
+resource "kubernetes_namespace" "production" {
+  metadata {
+    name = "production"
+  }
+}
